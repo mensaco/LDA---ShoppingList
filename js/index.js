@@ -24,6 +24,8 @@ window.App = () => {
         'password': '',
         'expireInDays': 1,
         'errors': '',
+        'loggedInUser': '',
+        'loginExpiresOn': '',
 
         showLogin(hide) {
             this.shopListOpen = false
@@ -44,6 +46,14 @@ window.App = () => {
             this.loginOpen = false
             this.menuOpen = false
         },
+        init() {
+            this.getArticles(() =>
+                this.getShoppingList(() => {
+                    this.showShoppingList()
+                    this.getUserInfo()
+                }
+                ))
+        }, // init()
         getUserInfo() {
             try {
                 const token = localStorage.getItem("_lda_token")
@@ -51,210 +61,236 @@ window.App = () => {
                 if (parts.length > 1) {
                     const decoded = atob(parts[1])
                     var userObject = JSON.parse(decoded)
-                    return {
-                        userName : userObject.userName,
-                        expiryDate: new Date(userObject.exp*1000).toISOString().replace(/[TZ]/g,' ').substring(0,19)
-                    }
+                    this.loggedInUser = userObject.userName
+                    this.loginExpiresOn = new Date(userObject.exp * 1000).toISOString().replace(/[TZ]/g, ' ').substring(0, 19)
+
                 }
             } catch (error) {
-                
+
             }
 
-            return {
-                userName : '',
-                expiryDate: ''
-            }
-
-        },
+        }, // getUserInfo()
         login() {
             this.loaderVisible = true
             this.LDA.authenticate(this.username, this.password, this.expireInDays,
                 (json) => {
                     localStorage.setItem("_lda_token", json.message)
                     this.loginOpen = false
-                    this.getArticles()
-                    this.getShoppingList()
-                },
+                    this.getUserInfo()
+                    this.getArticles(() => this.getShoppingList(() => this.showShoppingList()))
+
+                }, // OK
                 (json) => {
                     this.errors = json.errors
-                },
-                () => { this.loaderVisible = false }
+                }, // Error
+                () => { this.loaderVisible = false } // Finally
             )
 
         }, // /login()
-
-        init() {
-            this.getArticles(() => this.getShoppingList(() => this.showShoppingList()))
-        },
-
         getArticles(callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
             if (!token) {
                 this.showLogin()
             }
+            else {
+                this.LDA.getStrings('ArticleList', token,
+                    (json) => {
+                        this.ArticleList = json.data
+                        if (callback) {
+                            callback()
+                        }
+                    }, // OK
+                    (json) => {
+                        this.errors = json.errors
+                        this.showLogin()
+                    }, // not authenticated
+                    (json) => { this.errors = json.errors }, // Error
+                    () => { this.loaderVisible = false }, // Finally
 
-            this.LDA.getStrings('ArticleList', token,
-                (json) => {
-                    this.ArticleList = json.data
-                    if (callback) {
-                        callback()
-                    }
-                }, // OK
-                (json) => {
-                    this.errors = json.errors
-                    this.showLogin()
-                }, // Error
-                () => { this.loaderVisible = false }, // Finally
+                )
+            }
 
-            )
         }, // /getArticles()
 
         addArticle(callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
             if (!token) {
-                showLogin()
+                this.showLogin()
             }
 
+            else {
+                this.LDA.postStrings('ArticleList', token, [this.articleToAdd],
+                    (json) => {
+                        this.ArticleList = json.data
+                        this.articleToAdd = ''
+                        if (callback) {
+                            callback()
+                        }
+                    }, // OK
+                    (json) => {
+                        this.errors = json.errors
+                        this.showLogin()
+                    }, // not authenticated
+                    (json) => { this.errors = json.errors }, // Error
+                    () => { this.loaderVisible = false }, // Finally
 
-            this.LDA.postStrings('ArticleList', token, [this.articleToAdd],
-                (json) => {
-                    this.ArticleList = json.data
-                    this.articleToAdd = ''
-                    if (callback) {
-                        callback()
-                    }
-                }, // OK
-                (json) => { this.errors = json.errors }, // Error
-                () => { this.loaderVisible = false }, // Finally
-
-            )
+                )
+            }
         }, // /addArticle()        
         updateArticle(article, callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
             if (!token) {
-                showLogin()
+                this.showLogin()
+            }
+            else {
+                this.LDA.putStrings(article.id, token, article.value,
+                    (json) => {
+                        this.ArticleList = json.data
+                        if (callback) {
+                            callback()
+                        }
+                    }, // OK
+                    (json) => {
+                        this.errors = json.errors
+                        this.showLogin()
+                    }, // not authenticated
+                    (json) => { this.errors = json.errors }, // Error
+                    () => { this.loaderVisible = false }, // Finally
+
+                )
             }
 
-
-            this.LDA.putStrings(article.id, token, article.value,
-                (json) => {
-                    this.ArticleList = json.data
-                    if (callback) {
-                        callback()
-                    }
-                }, // OK
-                (json) => { this.errors = json.errors }, // Error
-                () => { this.loaderVisible = false }, // Finally
-
-            )
         }, // /updateArticle()
 
         deleteArticle(art, callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
             if (!token) {
-                showLogin()
+                this.showLogin()
             }
+            else {
+                this.LDA.deleteStringById(art.id, token,
+                    (json) => {
+                        this.ArticleList = json.data
+                        if (callback) {
+                            callback()
+                        }
+                    }, // OK
+                    (json) => {
+                        this.errors = json.errors
+                        this.showLogin()
+                    }, // not authenticated
+                    (json) => { this.errors = json.errors }, // Error
+                    () => { this.loaderVisible = false }, // Finally
 
+                )
 
-            this.LDA.deleteStringById(art.id, token,
-                (json) => {
-                    this.ArticleList = json.data
-                    if (callback) {
-                        callback()
-                    }
-                }, // OK
-                (json) => { this.errors = json.errors }, // Error
-                () => { this.loaderVisible = false }, // Finally
-
-            )
+            }
         }, // /deleteArticle()
 
         getShoppingList(callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
             if (!token) {
-                showLogin()
+                this.showLogin()
             }
+            else {
+                this.LDA.getStrings('ShoppingList', token,
+                    (json) => {
+                        this.ShoppingList = json.data
+                        if (callback) {
+                            callback()
+                        }
+                    }, // OK
+                    (json) => {
+                        this.errors = json.errors
+                        this.showLogin()
+                    }, // not authenticated
+                    (json) => { this.errors = json.errors }, // Error
+                    () => { this.loaderVisible = false }, // Finally
 
-            this.LDA.getStrings('ShoppingList', token,
-                (json) => {
-                    this.ShoppingList = json.data
-                    if (callback) {
-                        callback()
-                    }
-                }, // OK
-                (json) => { this.errors = json.errors }, // Error
-                () => { this.loaderVisible = false }, // Finally
-
-            )
+                )
+            }
         }, // /getShoppingList()
         addToShoppingList(callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
             if (!token) {
-                showLogin()
+                this.showLogin()
+            }
+            else {
+                this.LDA.postStrings('ShoppingList', token, [this.articleToShop],
+                    (json) => {
+                        this.ShoppingList = json.data
+                        this.articleToShop = ''
+                        if (callback) {
+                            callback()
+                        }
+                    }, // OK
+                    (json) => {
+                        this.errors = json.errors
+                        this.showLogin()
+                    }, // not authenticated
+                    (json) => { this.errors = json.errors }, // Error
+                    () => { this.loaderVisible = false }, // Finally
+
+                )
             }
 
-
-            this.LDA.postStrings('ShoppingList', token, [this.articleToShop],
-                (json) => {
-                    this.ShoppingList = json.data
-                    this.articleToShop = ''
-                    if (callback) {
-                        callback()
-                    }
-                }, // OK
-                (json) => { this.errors = json.errors }, // Error
-                () => { this.loaderVisible = false }, // Finally
-
-            )
         }, // /addToShoppingList()
         updateShoppingArticle(article, callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
             if (!token) {
-                showLogin()
+                this.showLogin()
+            }
+            else {
+                this.LDA.putStrings(article.id, token, article.value,
+                    (json) => {
+                        this.ShoppingList = json.data
+                        if (callback) {
+                            callback()
+                        }
+                    }, // OK
+                    (json) => {
+                        this.errors = json.errors
+                        this.showLogin()
+                    }, // not authenticated
+                    (json) => { this.errors = json.errors }, // Error
+                    () => { this.loaderVisible = false }, // Finally
+
+                )
             }
 
-
-            this.LDA.putStrings(article.id, token, article.value,
-                (json) => {
-                    this.ShoppingList = json.data
-                    if (callback) {
-                        callback()
-                    }
-                }, // OK
-                (json) => { this.errors = json.errors }, // Error
-                () => { this.loaderVisible = false }, // Finally
-
-            )
         }, // /updateShoppingArticle()
         deleteFromShoppingList(id, callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
             if (!token) {
-                showLogin()
+                this.showLogin()
+            }
+            else {
+                this.LDA.deleteStringById(id, token,
+                    (json) => {
+                        this.ShoppingList = json.data
+                        if (callback) {
+                            callback()
+                        }
+                    }, // OK
+                    (json) => {
+                        this.errors = json.errors
+                        this.showLogin()
+                    }, // not authenticated
+                    (json) => { this.errors = json.errors }, // Error
+                    () => { this.loaderVisible = false }, // Finally
+
+                )
             }
 
-
-            this.LDA.deleteStringById(id, token,
-                (json) => {
-                    this.ShoppingList = json.data
-                    if (callback) {
-                        callback()
-                    }
-                }, // OK
-                (json) => { this.errors = json.errors }, // Error
-                () => { this.loaderVisible = false }, // Finally
-
-            )
         }, // /deleteFromShoppingList()
-
-
 
     }
 }

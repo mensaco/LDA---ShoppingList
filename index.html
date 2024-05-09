@@ -87,18 +87,6 @@
                 List</button>
         </div>
 
-        <div class="px-3 flex items-center justify-between italic text-sm text-slate-500">
-            <div class="flex items-center justify-start gap-x-3">
-                <div>User: </div>
-                <div x-text="getUserInfo().userName"></div>
-            </div>
-            <div class="flex items-center justify-start gap-x-3">
-                <div> login expiry: </div>
-                <div x-text="getUserInfo().expiryDate"></div>
-            </div>
-
-        </div>
-
         <!-- article list here -->
         <div class="text-slate-700 p-3" x-show="artListOpen">
 
@@ -199,8 +187,18 @@
         <!-- login form here -->
         <div class="bg-white grid text-slate-700 p-3" x-show="loginOpen">
 
-            <div class="text-2xl  font-semibold my-3">Login</div>
+            <div>
+                <div class="text-2xl  font-semibold my-3">Login</div>
+                
+            </div>
 
+            <div> &nbsp;</div>
+
+            <div class="grid grid-cols-5 gap-x-3 items-center my-3 p-1">
+                <div> &nbsp;</div>
+                <div class=" col-span-4"><i class="text-sm underline cursor-pointer text-blue-500" @click="username='demo@tester.com'; password = 'Demotester!1'">Test with username: <b>demo@tester.com</b> , password: <b>Demotester!1</b></i></div>
+            </div>
+            
             <div class="grid grid-cols-5 gap-x-3 items-center my-3 p-1">
                 <div>Username:</div>
                 <input type="text" class="form-control col-span-4" placeholder="Your username here..."
@@ -241,9 +239,23 @@
             </template>
         </datalist>
 
+
+
         <div id="loader" class="loader" x-show="loaderVisible" x-cloak></div>
 
         <div class="bg-yellow-200 text-red-500 px-3 py-1" x-show="errors" x-text="errors">An error occurred.</div>
+
+        <div class="px-3 flex items-center justify-between italic text-sm text-slate-500 py-1 border-t border-slate-300">
+            <div class="flex items-center justify-start gap-x-3">
+                <div>User: </div>
+                <div x-text="loggedInUser"></div>
+            </div>
+            <div class="flex items-center justify-start gap-x-3">
+                <div> login expiry: </div>
+                <div x-text="loginExpiresOn"></div>
+            </div>
+
+        </div>
 
     </div>
 
