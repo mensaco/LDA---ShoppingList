@@ -245,7 +245,7 @@
 
         <div class="bg-yellow-200 text-red-500 px-3 py-1" x-show="errors" x-text="errors">An error occurred.</div>
 
-        <div class="px-3 flex items-center justify-between italic text-sm text-slate-500 py-1 border-t border-slate-300">
+        <div class="px-3 flex items-center justify-between italic text-sm text-slate-500 py-1 border-t border-slate-300" :class="loggedInUser != ''? '' : 'hidden'">
             <div class="flex items-center justify-start gap-x-3">
                 <div>User: </div>
                 <div x-text="loggedInUser"></div>
