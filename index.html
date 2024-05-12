@@ -37,9 +37,7 @@
             .loader {
                 z-index: 100;
                 border: 16px solid #f3f3f3;
-                /* Light grey */
                 border-top: 16px solid #3498db;
-                /* Blue */
                 border-radius: 50%;
                 width: 30px;
                 height: 30px;
@@ -97,7 +95,7 @@
                 <div>Filter:</div>
 
                 <input type="text" name="filter" id="filter" class="form-control flex-1"
-                    placeholder="filter as you type...">
+                    placeholder="filter as you type..." x-model="articleFilter">
 
             </div>
 
@@ -117,7 +115,7 @@
 
                 <div class="my-3">
 
-                    <template x-for="art in ArticleList">
+                    <template x-for="art in ArticleListFiltered()">
 
                         <div class="article">
 

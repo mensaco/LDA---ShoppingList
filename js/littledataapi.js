@@ -65,7 +65,7 @@ LDA.authenticate = (username, password, expireInDays, callbackOk, callbackError,
         })
     })
         .then(response =>
-            LDA.handleResponse(response, callbackOk, callbackError, callbackFinally))
+            LDA.handleResponse(response, callbackOk, () => { }, callbackError, callbackFinally))
 }
 
 
@@ -82,7 +82,7 @@ LDA.register = (username, password, callbackOk, callbackError, callbackFinally) 
         })
     })
         .then(response =>
-            LDA.handleResponse(response, callbackOk, callbackError, callbackFinally))
+            LDA.handleResponse(response, callbackOk, () => { } , callbackError, callbackFinally))
 }
 
 

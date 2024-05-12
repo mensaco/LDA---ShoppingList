@@ -12,6 +12,11 @@ window.App = () => {
             { "id": 2, "value": "Article 2" },
             { "id": 3, "value": "Article 3" },
         ],
+        'articleFilter':'',
+        ArticleListFiltered(){
+            
+            return this.articleFilter ? this.ArticleList.filter(a => a.value.toLowerCase().indexOf(this.articleFilter.toLowerCase())> -1 ) : this.ArticleList
+        },
         'ShoppingList': [
             { "id": 45, "value": "Article A" },
             { "id": 99, "value": "Article B" },
