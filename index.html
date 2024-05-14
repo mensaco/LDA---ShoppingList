@@ -71,10 +71,9 @@
     <div class="w-[36rem] mx-auto bg-slate-100 relative border border-slate-300 my-5" x-data="App()" x-init="init()">
 
 
-
         <!-- menu bar -->
         <div class="bg-slate-700 px-3 py-2 text-white flex justify-between">
-            <div>Shopping List App</div>
+            <div>Shopping List App - Demo</div>
             <button type="button" @click="menuOpen = !menuOpen">&#9776;</button>
         </div>
 
@@ -84,6 +83,13 @@
             <button type="button" class="menubutton" @click="showShoppingList()">Manage Shopping
                 List</button>
         </div>
+        <div class="p-3">
+            <div>Data Service: <a href="https://littledataapi.com" class="underline text-blue-500"
+                    target="_blank">https://littledataapi.com</a></div>
+            <div>Code on Github: <a href="https://github.com/mensaco/LDA---ShoppingList" class="underline text-blue-500"
+                    target="_blank">https://github.com/mensaco/LDA---ShoppingList</a></div>
+        </div>
+
 
         <!-- article list here -->
         <div class="text-slate-700 p-3" x-show="artListOpen">
@@ -187,16 +193,18 @@
 
             <div>
                 <div class="text-2xl  font-semibold my-3">Login</div>
-                
+
             </div>
 
             <div> &nbsp;</div>
 
             <div class="grid grid-cols-5 gap-x-3 items-center my-3 p-1">
                 <div> &nbsp;</div>
-                <div class=" col-span-4"><i class="text-sm underline cursor-pointer text-blue-500" @click="username='demo@tester.com'; password = 'Demotester!1'">Test with username: <b>demo@tester.com</b> , password: <b>Demotester!1</b></i></div>
+                <div class=" col-span-4"><i class="text-sm underline cursor-pointer text-blue-500"
+                        @click="username='demo@tester.com'; password = 'Demotester!1'">Test with username:
+                        <b>demo@tester.com</b> , password: <b>Demotester!1</b></i></div>
             </div>
-            
+
             <div class="grid grid-cols-5 gap-x-3 items-center my-3 p-1">
                 <div>Username:</div>
                 <input type="text" class="form-control col-span-4" placeholder="Your username here..."
@@ -243,7 +251,8 @@
 
         <div class="bg-yellow-200 text-red-500 px-3 py-1" x-show="errors" x-text="errors">An error occurred.</div>
 
-        <div class="px-3 flex items-center justify-between italic text-sm text-slate-500 py-1 border-t border-slate-300" :class="loggedInUser != ''? '' : 'hidden'">
+        <div class="px-3 flex items-center justify-between italic text-sm text-slate-500 py-1 border-t border-slate-300"
+            :class="loggedInUser != ''? '' : 'hidden'">
             <div class="flex items-center justify-start gap-x-3">
                 <div>User: </div>
                 <div x-text="loggedInUser"></div>
