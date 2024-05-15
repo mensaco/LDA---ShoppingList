@@ -68,13 +68,13 @@
 
 <body class="">
 
-    <div class="w-[36rem] mx-auto bg-slate-100 relative border border-slate-300 my-5" x-data="App()" x-init="init()">
+    <div class="md:w-[36rem] mx-auto bg-slate-100 relative border border-slate-300 my-5" x-data="App()" x-init="init()">
 
 
         <!-- menu bar -->
-        <div class="bg-slate-700 px-3 py-2 text-white flex justify-between">
+        <div class="bg-slate-700 px-3 py-2 text-white flex justify-between" @click="menuOpen = !menuOpen">
             <div>Shopping List App - Demo</div>
-            <button type="button" @click="menuOpen = !menuOpen">&#9776;</button>
+            <button type="button" >&#9776;</button>
         </div>
 
         <!-- menu items -->
