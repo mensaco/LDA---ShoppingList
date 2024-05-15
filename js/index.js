@@ -92,6 +92,10 @@ window.App = () => {
             )
 
         }, // /login()
+        logout(){
+            localStorage.removeItem("_lda_token");
+            document.location = document.location.toString()
+        },
         getArticles(callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
