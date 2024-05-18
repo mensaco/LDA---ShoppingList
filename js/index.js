@@ -96,6 +96,15 @@ window.App = () => {
             localStorage.removeItem("_lda_token");
             document.location = document.location.toString()
         },
+        sortByValue(a, b) {
+            if ( a.value < b.value ){
+                return -1;
+              }
+              if ( a.value > b.value ){
+                return 1;
+              }
+              return 0;
+        },
         getArticles(callback) {
             this.loaderVisible = true
             const token = localStorage.getItem("_lda_token")
@@ -105,7 +114,7 @@ window.App = () => {
             else {
                 this.LDA.getStrings('ArticleList', token,
                     (json) => {
-                        this.ArticleList = json.data
+                        this.ArticleList = json.data.sort(this.sortByValue)
                         if (callback) {
                             callback()
                         }
