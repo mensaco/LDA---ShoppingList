@@ -240,7 +240,12 @@ window.App = () => {
                 this.showLogin()
             }
             else {
-                this.LDA.postStrings('ShoppingList', token, [this.articleToShop],
+                var ats = [this.articleToShop]
+                if(ats[0].indexOf('\n')>-1){
+                    ats = ats[0].split('\n')
+                }
+                ats = ats.map(a => a.trim().replace(/ {2,}/gi,' ').replace(/\t/gi,''))
+                this.LDA.postStrings('ShoppingList', token, ats,
                     (json) => {
                         this.ShoppingList = json.data
                         this.articleToShop = ''
