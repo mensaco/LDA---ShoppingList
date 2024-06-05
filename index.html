@@ -74,7 +74,7 @@
         <!-- menu bar -->
         <div class="bg-slate-700 px-3 py-2 text-white flex justify-between" @click="menuOpen = !menuOpen">
             <div>Shopping List App - Demo</div>
-            <button type="button" >&#9776;</button>
+            <button type="button">&#9776;</button>
         </div>
 
         <!-- menu items -->
@@ -154,13 +154,23 @@
 
                 <div class="article my-3">
 
-                    <textarea type="text" class="flex-1 form-control" rows="1" placeholder="add new article here..." list="artLst"
+                    <!-- <input type="text" class="flex-1 form-control" placeholder="add new article here..." list="artLst"
+                        x-model="articleToShop"> -->
+                        <textarea type="text" class="flex-1 form-control h-8"  placeholder="add new article here..."
                         x-model="articleToShop"></textarea>
 
                     <button type="button" class="text-sky-700" @click="addToShoppingList()">
                         <i class="material-icons">add</i>
                     </button>
 
+                </div>
+                <div>
+                    <ul class="divide-y ml-2">
+                        <template x-for="article in ShoppingArticlesFiltered()">
+                            <li x-text="article.value" class="my-2 cursor-pointer text-cyan-800"
+                                @click="articleToShop = article.value"></li>
+                        </template>
+                    </ul>
                 </div>
 
                 <div class="my-3">

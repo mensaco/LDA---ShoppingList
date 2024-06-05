@@ -17,6 +17,26 @@ window.App = () => {
             
             return this.articleFilter ? this.ArticleList.filter(a => a.value.toLowerCase().indexOf(this.articleFilter.toLowerCase())> -1 ) : this.ArticleList
         },
+        ShoppingFilter(a){
+            return a.value.toLowerCase()
+                .replace(/ë/g,'e')
+                .replace(/ç/g,'c')
+                .replace(/ä/g,'a')
+                .replace(/ö/g,'o')
+                .replace(/ü/g,'u')
+                .replace(/ß/g,'s')
+                .indexOf(this.articleToShop
+                    .replace(/ë/g,'e')
+                    .replace(/ç/g,'c')
+                    .replace(/ä/g,'a')
+                    .replace(/ö/g,'o')
+                    .replace(/ü/g,'u')
+                    .replace(/ß/g,'s')
+                .toLowerCase()) > -1
+        },
+        ShoppingArticlesFiltered(){
+            return this.articleToShop ? this.ArticleList.filter(a => this.ShoppingFilter(a)) :[]
+        },
         'ShoppingList': [
             { "id": 45, "value": "Article A" },
             { "id": 99, "value": "Article B" },
